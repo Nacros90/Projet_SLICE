@@ -10,6 +10,12 @@ const int stepsPerRevolution = 20;
 const float vitesseY_RPM = 0.5;  // constante
 const int pasParCycle = 290;
 
+// Constantes de réglage
+const long SEUIL_PAS_Y = 5;            // Nb de pas Y avant recalcul
+const float VITESSE_X_MIN = 10.0;      // Vitesse min de X
+const float VITESSE_X_MAX = 2000.0;    // Vitesse max de X
+const float SEUIL_DIFF_VITESSE_X = 5.0;// Variation min pour MAJ moteur X
+
 AccelStepper moteurY(AccelStepper::DRIVER, STEP_Y, DIR_Y);
 AccelStepper moteurX(AccelStepper::DRIVER, STEP_X, DIR_X);
 
@@ -28,6 +34,7 @@ void setup() {
 
   // Initialiser moteur X
   moteurX.setMaxSpeed(2000);  // max possible
+  moteurX.setMaxSpeed(VITESSE_X_MAX);  // max possible
   moteurX.setSpeed(100);      // valeur initiale
 }
 
@@ -52,15 +59,18 @@ void loop() {
   long positionY = abs(moteurY.currentPosition());
 
   if (abs(positionY - dernierPasY) >= 5) {
+  if (abs(positionY - dernierPasY) >= SEUIL_PAS_Y) {
     float rayon = mapPasToRayonSymetrique(positionY);  // en cm
     float vitesseX = (vitesseY_RPM * 1e6) / (60.0 * 2 * PI * rayon);
 
     // Imposer une vitesse minimale
     if (vitesseX < 10) vitesseX = 10;
     if (vitesseX > 2000) vitesseX = 2000;
+    vitesseX = constrain(vitesseX, VITESSE_X_MIN, VITESSE_X_MAX);
 
     // N'appliquer la nouvelle vitesse que si elle change vraiment
     if (abs(vitesseX - vitesseX_actuelle) > 5) {
+    if (abs(vitesseX - vitesseX_actuelle) > SEUIL_DIFF_VITESSE_X) {
       moteurX.setSpeed(vitesseX);
       vitesseX_actuelle = vitesseX;
 
