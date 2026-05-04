@@ -100,4 +100,3 @@ float mapPasToRayonSymetrique(long pas) {
                                       : (float)(cycle - pasParCycle) / pasParCycle;
   return rayonMin + (rayonMax - rayonMin) * phase;
 }
-
