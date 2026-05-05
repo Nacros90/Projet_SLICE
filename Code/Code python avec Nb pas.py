@@ -114,15 +114,17 @@ def update_trace(r_val: float):
     key = (gx, gy)
     visit[key] = visit.get(key, 0) + 1
     c = visit[key]
-    alpha = min(190, 10 + c * 3)
+    # On augmente la visibilité de la heatmap en rendant l'alpha plus sensible.
+    # L'alpha augmentera plus vite avec le nombre de visites (c).
+    alpha = min(220, 20 + c * 5)
 
     px = gx * 4
     py = gy * 4
     pygame.draw.rect(heat_surf, (255, 80, 80, alpha), pygame.Rect(px, py, 4, 4))
 
-def draw_hud(r_val, omega_val, nbp_val): 
+def draw_hud(r_val, omega_val, nbp_val, v_r_val):
     v_tan = omega_val * r_val
-    v_rel = math.sqrt(v_tan**2 + dx**2)
+    v_rel = math.sqrt(v_tan**2 + v_r_val**2)
 
     title = FONT_BIG.render("BANC SLICE - V0 constante", True, YELLOW)
     screen.blit(title, (18, 14))
@@ -132,7 +134,7 @@ def draw_hud(r_val, omega_val, nbp_val):
         f"r(t) = {r_val:.1f} px   |   r_min={r_min}  r_max={r_max}",
         f"omega(t) = V0 / r = {omega_val:.3f} rad/s",
         f"v_tan = omega*r = {v_tan:.1f} px/s  (≈ V0)",
-        f"v_r = {v_r:.1f} px/s   =>  v_rel = sqrt(v_tan^2 + v_r^2) = {v_rel:.1f} px/s",
+        f"v_r = {v_r_val:.1f} px/s   =>  v_rel = sqrt(v_tan^2 + v_r^2) = {v_rel:.1f} px/s",
         "Touches : ESC quitter | ESPACE pause | R reset trace | up/down Nb pas",
     ]
 
@@ -173,14 +175,11 @@ while True:
 
     # On recalcule dx car Nbp a pu changer
     dx = (Nbp * Rp) / 360
+    v_r_actuelle = dx
 
     # --------- Update cinématique ---------
     if not paused:
-        # 1) Vitesse radiale constante
-        # On utilise directement dx défini dans vos paramètres
-        v_r_actuelle = dx 
-
-        # 2) Mise à jour de la position radiale r
+        # Mise à jour de la position radiale r
         # Le pion avance de façon linéaire (vitesse constante)
         r += r_dir * v_r_actuelle * dt
         
@@ -192,11 +191,11 @@ while True:
             r = float(r_min)
             r_dir = 1.0
 
-        # 3) MAINTIEN DE V0 CONSTANTE
+        # MAINTIEN DE V0 CONSTANTE
         # C'est ici que la magie opère : omega s'adapte à r
         omega = V0 / max(r, 1e-6)
 
-        # 4) Rotation du disque
+        # Rotation du disque
         theta = (theta + omega * dt) % (2 * math.pi)
 
         update_trace(r)
@@ -205,14 +204,15 @@ while True:
 
     # --------- Draw (Affichage) ---------
     screen.fill(DARK_BG)
-    screen.blit(heat_surf, (0, 0))
-    screen.blit(trace_surf, (0, 0))
-
     draw_disk(theta)
+
+    # On dessine la trace fine d'abord, puis la heatmap par-dessus pour qu'elle soit plus visible.
+    screen.blit(trace_surf, (0, 0))
+    screen.blit(heat_surf, (0, 0))
+
     draw_pion(r)
     
-    # On passe v_r_actuelle au HUD pour l'affichage
-    draw_hud(r, omega, Nbp) 
+    draw_hud(r, omega, Nbp, v_r_actuelle)
 
     if paused:
         p = FONT_BIG.render("PAUSE", True, YELLOW)
