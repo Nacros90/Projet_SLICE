@@ -64,6 +64,9 @@ void loop() {
     moteurY.setSpeed(-moteurY.speed());
     positionDepart = moteurY.currentPosition();
     positionCible = positionDepart + (pasParCycle * (moteurY.speed() > 0 ? 1 : -1));
+    
+    Serial.print("Inversion Y. Cible : ");
+    Serial.println(positionCible);
   }
 
   // --- ASSERVISSEMENT DU MOTEUR X (VITESSE DU DISQUE) ---
@@ -80,6 +83,13 @@ void loop() {
     if (abs(vitesseX - vitesseX_actuelle) > SEUIL_DIFF_VITESSE_X) {
       moteurX.setSpeed(vitesseX);
       vitesseX_actuelle = vitesseX;
+      
+      Serial.print("Rayon(cm):");
+      Serial.print(rayon);
+      Serial.print("\tVitesse_Plateau(pas/s):");
+      Serial.print(vitesseX);
+      Serial.print("\tPosition_Pion(pas):");
+      Serial.println(positionY);
     }
     
     dernierPasY = positionY;
