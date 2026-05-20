@@ -6,8 +6,10 @@
 #define STEP_X 2
 #define DIR_X 5
 
+const int multiplicateur_mecanique = 2.83;
+
 // --- CONSTANTES PHYSIQUES ---
-const int stepsPerRevolutionX = 200; // À vérifier (souvent 200 pour NEMA 17)
+const int stepsPerRevolutionX = 200 * multiplicateur_mecanique; // À vérifier (souvent 200 pour NEMA 17)
 const int stepsPerRevolutionY = 200; 
 
 const float VITESSE_TANGENTIELLE_CIBLE = 15.0; // Vitesse de "l'avancée du train" en cm/s
