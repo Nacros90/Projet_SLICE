@@ -15,7 +15,7 @@ const int stepsPerRevolutionX = (200 * MICROSTEPPING)*multiplicateur_mecanique;
 const int stepsPerRevolutionY = 200 * MICROSTEPPING; 
 
 // --- CONSTANTES PHYSIQUES ---
-const float VITESSE_TANGENTIELLE_CIBLE = 15.0; // Vitesse de ton train en cm/s
+const float VITESSE_TANGENTIELLE_CIBLE = 25.0; // Vitesse de ton train en cm/s
 const float vitesseY_RPM = 0.5;                
 const int pasParCycle = 290 * MICROSTEPPING;   // Déplacement total du pion       
 const float RAYON_MAX = 7.5;                   // cm
@@ -24,7 +24,7 @@ const float RAYON_MIN = 1.35;                  // cm
 // --- CONSTANTES DE RÉGLAGE LOGICIEL ---
 const long SEUIL_PAS_Y = 2;             // Seuil plus bas en Full Step
 const float VITESSE_X_MIN = 10.0;      
-const float VITESSE_X_MAX = 1000.0;     // Plafond de sécurité adapté au Full Step
+const float VITESSE_X_MAX = 1100.0;     // Plafond de sécurité adapté au Full Step
 const float SEUIL_DIFF_VITESSE_X = 2.0;
 
 AccelStepper moteurY(AccelStepper::DRIVER, STEP_Y, DIR_Y);
