@@ -14,7 +14,7 @@ pygame.init()
 # =========================================================
 # FENETRE
 # =========================================================
-WIDTH, HEIGHT = 1400, 900
+WIDTH, HEIGHT = 1400, 720
 FPS = 60
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
