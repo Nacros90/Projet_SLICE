@@ -1,3 +1,20 @@
+//Maquette de démonstration pour le projet SLICE
+//Objectif : Contrôler un moteur linéaire (pion) et un moteur rotatif (disque) en synchronisation
+//avec une vitesse tangentielle constante pour le pion.
+//
+//Matériel :
+//- Arduino UNO R4 MINIMA
+//- Shield CNC pour contrôler les moteurs pas à pas
+//- Moteur linéaire (pion) avec driver compatible
+//- Moteur rotatif (disque) avec driver compatible
+//
+//Fonctionnement :
+//- Le moteur Y (pion) effectue un mouvement linéaire aller-retour entre deux positions définies.
+//- Le moteur X (disque) ajuste sa vitesse de rotation en fonction de la position du pion pour maintenir une vitesse tangentielle constante.
+//
+//Note : Ce code est conçu pour être utilisé en mode FULL STEP pour une meilleure précision et un contrôle plus fin des moteurs. Assurez-vous que les drivers de vos moteurs sont configurés pour le microstepping approprié (1/8 dans ce cas) pour correspondre aux constantes définies dans le code.
+
+// 1. --- Initialisation et Variables globales ---
 #include <AccelStepper.h>
 
 // --- BROCHES DU SHIELD CNC ---
@@ -53,6 +70,7 @@ void setup() {
   Serial.println("Initialisation SLICE (Mode FULL STEP) OK.");
 }
 
+// 2. --- BOUCLE PRINCIPALE ---
 void loop() {
   moteurY.runSpeed();
   moteurX.runSpeed();
@@ -98,7 +116,7 @@ void loop() {
   }
 }
 
-// --- FONCTIONS MATHÉMATIQUES ---
+//  --- FONCTIONS MATHÉMATIQUES ---
 float convertRPMToStepsPerSec(float rpm, int stepsPerRev) {
   return (rpm * stepsPerRev) / 60.0;
 }
