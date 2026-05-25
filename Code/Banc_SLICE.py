@@ -1,6 +1,4 @@
 
-# -*- coding: utf-8 -*-  # Encodage du fichier pour accepter les accents
-
 import sys          # Permet de quitter proprement le programme
 import math         # Permet d’utiliser pi, cos, sin, etc.
 import pygame       # Bibliothèque utilisée pour l’affichage graphique
@@ -215,13 +213,11 @@ def draw_hud(r_val, omega_val, nbp_val):
     lines = [
         f"Nbp        : {nbp_val}",
         f"Rayon      : {rayon_cm:.2f} cm",
-        f"Omega      : {omega_val:.3f} rad/s",
+        f"Vitesse angulaire : {omega_val:.3f} rad/s",
         f"Vt reelle  : {v_tan_cm_s:.2f} cm/s",
         f"V0 cible   : {V0_CM_S:.1f} cm/s"
     ]
-
     y = panel_y + 145                 # Position verticale du premier texte
-
     for s in lines:                   # Affichage ligne par ligne
         surf = FONT.render(s, True, BLACK)
         screen.blit(surf, (panel_x + 55, y))
@@ -235,9 +231,7 @@ def draw_hud(r_val, omega_val, nbp_val):
         "UP/DOWN: Modifier Nbp",
         "ESC    : Quitter"
     ]
-
     y = panel_y + 345                 # Position des commandes
-
     for cmd in commandes:             # Affichage des commandes
         surf = FONT_SMALL.render(cmd, True, (120, 40, 20))
         screen.blit(surf, (panel_x + 55, y))
@@ -281,17 +275,15 @@ def draw_graph():
 
     title = FONT_SMALL.render("Courbes en temps reel", True, BLACK)
     screen.blit(title, (graph_x + 18, graph_y + 12))
-
     legend_y = graph_y + 42           # Position de la légende
-
     pygame.draw.circle(screen, RED, (graph_x + 22, legend_y), 6)
     screen.blit(FONT_SMALL.render("Rayon", True, BLACK), (graph_x + 35, legend_y - 9))
 
     pygame.draw.circle(screen, BLUE, (graph_x + 135, legend_y), 6)
-    screen.blit(FONT_SMALL.render("Omega", True, BLACK), (graph_x + 148, legend_y - 9))
+    screen.blit(FONT_SMALL.render("Vitesse angulaire", True, BLACK), (graph_x + 148, legend_y - 9))
 
-    pygame.draw.circle(screen, GREEN, (graph_x + 255, legend_y), 6)
-    screen.blit(FONT_SMALL.render("Vt", True, BLACK), (graph_x + 268, legend_y - 9))
+    pygame.draw.circle(screen, GREEN, (graph_x + 355, legend_y), 6)
+    screen.blit(FONT_SMALL.render("Vt", True, BLACK), (graph_x + 368, legend_y - 9))
 
     plot_x = graph_x + 60             # Début x de la zone de tracé décalé à l’intérieur
     plot_y = graph_y + 75             # Début y de la zone de tracé
@@ -300,7 +292,6 @@ def draw_graph():
 
     pygame.draw.line(screen, BLACK, (plot_x, plot_y + plot_h),
                      (plot_x + plot_w, plot_y + plot_h), 2)  # Axe horizontal
-
     pygame.draw.line(screen, BLACK, (plot_x, plot_y),
                      (plot_x, plot_y + plot_h), 2)           # Axe vertical
 
@@ -319,7 +310,6 @@ def draw_graph():
             y = plot_y + plot_h - int((val - min_val) * plot_h / (max_val - min_val))
             y = max(plot_y, min(plot_y + plot_h, y))
             points.append((x, y))
-
         return points
 
     if len(rayon_data) > 2:           # Tracé seulement si assez de points
@@ -336,51 +326,37 @@ def draw_graph():
 # =========================================================
 while True:
     dt = clock.tick(FPS) / 1000.0     # Temps écoulé entre deux images
-
     for event in pygame.event.get():  # Lecture des événements
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-
             if event.key == pygame.K_SPACE:
                 paused = not paused
 
     keys = pygame.key.get_pressed()   # Lecture continue du clavier
-
     if keys[pygame.K_UP]:
         Nbp += 1                      # Augmente Nbp
-
     if keys[pygame.K_DOWN]:
         Nbp = max(1, Nbp - 1)         # Diminue Nbp sans descendre sous 1
-
     dx = (Nbp * Rp) / 360             # Vitesse radiale du pion
 
     if not paused:
         r_px += r_dir * dx * dt       # Déplacement du pion
-
         if r_px >= r_max_px:
             r_px = float(r_max_px)
             r_dir = -1.0
-
         elif r_px <= r_min_px:
             r_px = float(r_min_px)
             r_dir = 1.0
-
         rayon_cm = px_to_cm(r_px)     # Rayon actuel en cm
-
         omega = V0_CM_S / max(rayon_cm, 1e-6)  # Omega = Vt / r
-
         vt = omega * rayon_cm         # Vitesse tangentielle réelle
-
         theta = (theta + omega * dt) % (2 * math.pi)  # Rotation du disque
-
         update_trace(r_px)            # Mise à jour de la trace
-
         rayon_data.append(rayon_cm)   # Ajout du rayon dans la courbe
         omega_data.append(omega)      # Ajout de omega
         vt_data.append(vt)            # Ajout de Vt
@@ -389,19 +365,15 @@ while True:
             rayon_data.pop(0)
             omega_data.pop(0)
             vt_data.pop(0)
-
     else:
         rayon_cm = px_to_cm(r_px)
         omega = V0_CM_S / max(rayon_cm, 1e-6)
 
     draw_background()                 # Dessin du fond
-
     screen.blit(heat_surf, (0, 0))    # Affichage heatmap
     screen.blit(trace_surf, (0, 0))   # Affichage trace
-
     draw_disk(theta)                  # Dessin disque
     draw_pion(r_px)                   # Dessin pion
-
     draw_hud(r_px, omega, Nbp)        # Affichage informations
     draw_speed_bar(omega)             # Barre vitesse angulaire
     draw_graph()                      # Courbes
@@ -409,5 +381,4 @@ while True:
     if paused:
         pause_text = FONT_BIG.render("PAUSE", True, YELLOW)
         screen.blit(pause_text, (WIDTH // 2 - 60, HEIGHT - 80))
-
     pygame.display.flip()             # Rafraîchissement écran
