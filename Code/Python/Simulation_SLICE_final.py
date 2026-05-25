@@ -282,8 +282,8 @@ def draw_graph():
     pygame.draw.circle(screen, BLUE, (graph_x + 135, legend_y), 6)
     screen.blit(FONT_SMALL.render("Vitesse angulaire", True, BLACK), (graph_x + 148, legend_y - 9))
 
-    pygame.draw.circle(screen, GREEN, (graph_x + 255, legend_y), 6)
-    screen.blit(FONT_SMALL.render("Vt", True, BLACK), (graph_x + 268, legend_y - 9))
+    pygame.draw.circle(screen, GREEN, (graph_x + 355, legend_y), 6)
+    screen.blit(FONT_SMALL.render("Vt", True, BLACK), (graph_x + 368, legend_y - 9))
 
     plot_x = graph_x + 60             # Début x de la zone de tracé décalé à l’intérieur
     plot_y = graph_y + 75             # Début y de la zone de tracé
