@@ -50,9 +50,11 @@ python Code/Slice.py
 Le programme embarqué opère en boucle ouverte et recalcule la vitesse du disque via un échantillonnage spatial régulier.
 1. Ouvrez le fichier `Code_maquette_UNO_R4_MINIMA/Code_maquette_UNO_R4_MINIMA.ino` dans l'Arduino IDE.
 2. Assurez-vous d'avoir installé le gestionnaire de carte **Arduino UNO R4 Boards**.
-3. Sélectionnez le port COM correspondant à votre Arduino UNO R4 Minima.
-4. **Important :** Effectuez le "Zéro Mécanique" en plaçant manuellement le pion sur le bord extérieur du disque ($R_{max} = 7.5$ cm) avant toute mise sous tension.
+3. Sélectionnez le port COM correspondant à votre Arduino UNO R4 Minima (*).
+4. **Important :** Effectuez le "Zéro Mécanique" en plaçant manuellement le pion sur le bord extérieur du disque avant toute mise sous tension.
 5. Téléversez le code et alimentez le Shield en puissance.
+
+(*) Pour les utilisateurs de Linux, des problèmes d'autorisation peuvent survenirs. Ils peuvent êtres régler en autorisant l'IDE Arduino l'utilisation direct des port COM.
 
 ## Équipe Projet
 * Naël CROSNIER
