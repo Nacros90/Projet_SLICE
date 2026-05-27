@@ -9,10 +9,9 @@ Ce dépôt regroupe l'intégralité du travail d'ingénierie : la modélisation 
 
 ## Architecture du dépôt
 
-* **Code/** : Contient les simulations cinématiques en Python (modélisation mathématique avec `pygame`).
-* **Code_maquette_UNO_R4_MINIMA/** : Contient le programme C++ définitif pour le microcontrôleur, gérant l'asservissement en temps réel avec la bibliothèque `AccelStepper`.
+* **Code/** : Contient les simulations cinématiques en Python (modélisation mathématique avec `pygame`) et les programmes C++ Arduino.
 * **Documentation/** : Manuels techniques, documentations des composants électroniques (Shield CNC, drivers) et rapports académiques.
-* **CAO/** : Fichiers `.stl` (ex: `Support Disque.stl`) prêts pour l'impression 3D.
+* **CAO/** : Fichiers `.stl` (ex: `support_disque.stl`) prêts pour l'impression 3D.
 
 ## Matériel et Prérequis
 
@@ -43,18 +42,44 @@ La simulation permet de visualiser la courbe de vitesse requise par rapport à l
 pip install pygame
 
 # Lancement du script principal
-python Code/Slice.py
+python Code/Python/slice.py
 ```
 
 ### Étape 3 : Déployer le Contrôle Matériel (Arduino)
 Le programme embarqué opère en boucle ouverte et recalcule la vitesse du disque via un échantillonnage spatial régulier.
-1. Ouvrez le fichier `Code_maquette_UNO_R4_MINIMA/Code_maquette_UNO_R4_MINIMA.ino` dans l'Arduino IDE.
-2. Assurez-vous d'avoir installé le gestionnaire de carte **Arduino UNO R4 Boards**.
-3. Sélectionnez le port COM correspondant à votre Arduino UNO R4 Minima (*).
-4. **Important :** Effectuez le "Zéro Mécanique" en plaçant manuellement le pion sur le bord extérieur du disque avant toute mise sous tension.
-5. Téléversez le code et alimentez le Shield en puissance.
 
-(*) Pour les utilisateurs de Linux, des problèmes d'autorisation peuvent survenirs. Ils peuvent êtres régler en autorisant l'IDE Arduino l'utilisation direct des port COM.
+#### 3.1 Préparation matérielle
+1. Ouvrez le fichier `Code/Arduino/Code_maquette_UNO_R4_MINIMA/Code_maquette_UNO_R4_MINIMA.ino` dans l'Arduino IDE.
+2. Assurez-vous d'avoir installé le gestionnaire de carte **Arduino UNO R4 Boards**.
+3. **Important :** Effectuez le "Zéro Mécanique" en plaçant manuellement le pion sur le bord extérieur du disque ($R_{max} = 7.5$ cm) avant toute mise sous tension.
+
+#### 3.2 Configuration Système et Ports de communication
+Avant de téléverser, configurez l'accès aux ports série selon votre système d'exploitation.
+
+**Sous Microsoft Windows :**
+* Branchez la carte et ouvrez le **Gestionnaire de périphériques** (`Win + X`).
+* Déroulez l'onglet **Ports (COM et LPT)** pour identifier le port attribué (ex: `COM6`).
+* *Note :* L'UNO R4 est reconnue nativement. Si vous utilisez une ancienne Nano, le pilote **CH340** peut être requis.
+* Dans l'IDE Arduino, sélectionnez ce port COM.
+
+**Sous GNU/Linux (Gestion des droits POSIX) :**
+Par défaut, Linux restreint l'accès aux ports série (`/dev/ttyACM0` ou `/dev/ttyUSB0`), ce qui provoquera une erreur `Permission denied` lors du téléversement ou de l'exécution du code Arduino.
+* Pour octroyer les droits de manière permanente, ajoutez votre utilisateur au groupe propriétaire du périphérique série :
+  * Sous Debian / Ubuntu / Mint : `sudo usermod -aG dialout $USER`
+  * Sous Arch Linux / Fedora : `sudo usermod -aG uucp $USER`
+* Appliquez la modification sans redémarrer la session en tapant : `newgrp dialout` (ou `newgrp uucp`).
+* Dans l'IDE Arduino, sélectionnez le port `/dev/tty...` correspondant.
+
+#### 3.3 Téléversement et Diagnostic
+* Cliquez sur **Téléverser** dans l'IDE. Une fois terminé, alimentez le Shield en puissance (8V).
+
+*Matrice de résolution des problèmes courants :*
+| Symptôme observé | Cause probable | Action corrective |
+| :--- | :--- | :--- |
+| **`Permission denied` (Linux)** | Droits restreints sur le port série. | Exécuter la commande `usermod` et `newgrp` (voir 3.2). |
+| **Port COM invisible (Windows)** | Absence du pilote USB-Série. | Télécharger et installer le pilote CH340. |
+| **`not in sync: resp=0x00`** | Parasitage matériel ou port occupé. | Débrancher le Shield CNC de l'Arduino pour le téléversement ou fermer les logiciels de tranchage 3D. |
+| **Décrochage en fin de course** | Limite physique atteinte (FCEM sous 8V). | Vérifier que l'écrêtage à 10 000 pas/s (`constrain`) est bien actif dans le code. |
 
 ## Équipe Projet
 * Naël CROSNIER
