@@ -12,7 +12,7 @@
 //- Le moteur Y (pion) effectue un mouvement linéaire aller-retour entre deux positions définies.
 //- Le moteur X (disque) ajuste sa vitesse de rotation en fonction de la position du pion pour maintenir une vitesse tangentielle constante.
 //
-//Note : Ce code est conçu pour être utilisé en mode FULL STEP pour une meilleure précision et un contrôle plus fin des moteurs. Assurez-vous que les drivers de vos moteurs sont configurés pour le microstepping approprié (1/8 dans ce cas) pour correspondre aux constantes définies dans le code.
+//Note : Ce code est conçu pour être utilisé en mode Microstepping 1/8 de pas pour une meilleure précision et un contrôle plus fin des moteurs. Assurez-vous que les drivers de vos moteurs sont configurés pour le microstepping approprié (1/8 dans ce cas) pour correspondre aux constantes définies dans le code.
 
 // 1. --- Initialisation et Variables globales ---
 #include <AccelStepper.h>
@@ -24,7 +24,7 @@
 #define STEP_X 2   // Broche STEP du moteur X (plateau/disque)
 #define DIR_X 5    // Broche DIR du moteur X
 
-// --- RÉSOLUTION MÉCANIQUE (FULL STEP) ---
+// --- RÉSOLUTION MÉCANIQUE (MICROSTEPPING 1/8) ---
 const int MICROSTEPPING = 8; // Microstepping du driver (1/8 de pas)
 
 const float multiplicateur_mecanique = 2.83; 
